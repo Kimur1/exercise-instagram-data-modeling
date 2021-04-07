@@ -10,40 +10,36 @@ Base = declarative_base()
 
 class Comment(Base):
     __tablename__ = 'comment'
-    id = column(Integer, primary_key=True)
-    author_id = column(Integer, ForeignKey('user.id'))
-    post_id = column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
-    post = relationship(Post)
+    id = Column(Integer, primary_key=True)
+    author_id = Column(Integer, ForeignKey('user.id'))
+    post_id = Column(Integer, ForeignKey('post.id'))
 
 
-
+class Post(Base):
+    __tablename__ = 'post'
+    id = Column(Integer, primary_key=True)
+    user_to_id = Column(String(250), ForeignKey('user.id'), nullable=False)
+    url = Column(String(250),nullable=False)
+    post_id = Column(Integer, ForeignKey('post.id'))
+    comment = relationship(Comment)
 
 
 class Follower(Base):
     __tablename__ = 'follower'
-    id = column(Integer, primary_key=True)
-    user_from_id = column(Integer, ForeignKey('user.id'))
-    user_to_id = column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
+    id = Column(Integer, primary_key=True)
+    user_from_id = Column(Integer, ForeignKey('user.id'))
+    user_to_id = Column(Integer, ForeignKey('user.id'))
 
 class User(Base):
     __tablename__ = 'user'
-    id = column(Integer, primary_key=True)
-    username = column(String(250),index= True, nullable=False)  
-    firstname = column(String(250), nullable=False)
-    lastname = column(String(250), nullable=False)
-    email = column(String(250),unique=True, nullable =False)
-   
+    id = Column(Integer, primary_key=True)
+    username = Column(String(250),index= True, nullable=False)  
+    firstname = Column(String(250), nullable=False)
+    lastname = Column(String(250), nullable=False)
+    email = Column(String(250),unique=True, nullable =False)
+    comment = relationship(Comment)
+    post = relationship(Post)
+    follower = relationship(Follower)
 
-class Post(Base):
-    __tablename__ = 'post'
-    id = column(Integer, primary_key=True)
-    user_to_id = column(String(250), ForeignKey('user.id'), nullable=False)
-    user = relationship(User)
-    url = column(String(250),nullable=False)
-    post_id = column(Integer, ForeignKey('post.id'))
-
-  
 ## Draw from SQLAlchemy base
 render_er(Base,'DIAGRAM.png')
